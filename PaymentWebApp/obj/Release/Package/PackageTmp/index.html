@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            var $payments = $('#payments');
+
+            $.ajax({
+                type: 'GET',
+                url: 'http://localhost:5001/api/payment/1',
+                success: function (payments) {
+                    $.each(payments, function (i, payment) {
+                        $payments.append('<li>name:' + payment.Name + '</li>');
+                    });
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="form">
+        <form action="">
+            First name:<br>
+            <input type="text" name="Ad" value="">
+            <br>
+            Last name:<br>
+            <input type="text" name="SoyAd" value="">
+            <br><br>
+            <input type="submit" value="Gönder">
+        </form>
+    </div>
+
+    <div>
+        <h2>Payment</h2>
+        <ul id="payments">
+            <li>
+                <p>Name: <input type="text" id="name" /></p>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

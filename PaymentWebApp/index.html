@@ -1,0 +1,219 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <style>
+        .col-1 {
+            width: 8.33%;
+        }
+
+        .col-2 {
+            width: 16.66%;
+        }
+
+        .col-3 {
+            width: 25%;
+        }
+
+        .col-4 {
+            width: 33.33%;
+        }
+
+        .col-5 {
+            width: 41.66%;
+        }
+
+        .col-6 {
+            width: 50%;
+        }
+
+        .col-7 {
+            width: 58.33%;
+        }
+
+        .col-8 {
+            width: 66.66%;
+        }
+
+        .col-9 {
+            width: 75%;
+        }
+
+        .col-10 {
+            width: 83.33%;
+        }
+
+        .col-11 {
+            width: 91.66%;
+        }
+
+        .col-12 {
+            width: 100%;
+        }
+
+        [class*="col-"] {
+            float: left;
+            padding: 15px;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        header {
+            background-color: #666;
+            padding: 10px;
+            text-align: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        table {
+            float: left;
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+
+        #formpost {
+            float: left;
+            padding: 20px;
+            font-family: arial, sans-serif;
+        }
+
+        text {
+            width: 300px;
+            height: 300px;
+        }
+
+        #bill {
+            width: 250px;
+            height: 200px;
+            font-family: arial, sans-serif;
+        }
+
+        h2 {
+            font-family: arial, sans-serif;
+        }
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"> </script>
+    <script>
+        $(document).ready(function () {
+            $("#button").click(function () {
+                var $table = $('#productTable');
+                $("#productTable").empty();
+
+                $.ajax({
+                    type: 'GET',
+                    url: 'http://localhost:5002/api/product/0',
+                    dataType: 'json',
+                    success: function (data) {
+                        $.each(data, function (i, product) {
+                            $table.append('<tr>' + '<td>' + product.Id + '</td>' + '<td>' + product.Name + '</td>' + '<td>' + product.Color + '</td>' + '<td>' + product.Price + '</td>' + '<td>' + product.ExpirationDate + '</td>' + '<td>' + product.Country + '</td>' + '</tr>');
+                        });
+                    }
+                });
+            });
+        });
+
+        $(document).ready(function () {
+            $("#buttonpost").click(function () {
+                var id = $('#productid').val();
+                var balance = $('#balance').val();
+                var name = $('#name').val();
+                var currency = $('#currency').val();
+                $("#bill").empty();
+                $("#billh2").show();
+
+                $.ajax({
+                    type: 'POST',
+                    url: 'http://localhost:5000/api/payment',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ ProductId: id, Balance: balance, Name: name, Currency: currency }),
+                    success: function (response) {
+                        $("#billh2").show();
+                        $("#bill").append("<li>" + "Current Balance =" + response.value.newBalance + "</li>");
+                        $("#bill").append("<li>" + "Total Cost =" + response.value.totalPrice + "</li>");
+                        $("#bill").append("<li>" + "Transaction Date =" + response.value.date + "</li>");
+                    },
+                    error: function (errormessage) {
+                        console.log(errormessage);
+
+                    }
+                });
+            });
+        });
+
+        //$(document).ready(function () {
+        //    $("#tıkla").click(function () {
+        //        //var $deger = document.getElementById("sa").value;
+        //        var $link = 'http://localhost:5000/api/payment/' + $deger;
+        //        as.value = $link;
+        //    });
+        //});
+    </script>
+</head>
+<body>
+    <header>
+        <h2>PRODUCT API</h2>
+    </header>
+    <div class="row">
+        <div class="col-7">
+            <table id="products">
+                <tr>
+                    <th> Id</th>
+                    <th> Name</th>
+                    <th> Color</th>
+                    <th> Price</th>
+                    <th> Expiration Date</th>
+                    <th> Country</th>
+                </tr>
+                <tbody id="productTable"></tbody>
+            </table>
+            <br /><br />
+            <input type="button" id="button" value="Get Products" />
+
+        </div>
+
+        <div class="col-4">
+            <div class="col-6">
+                <form id="formpost">
+                    Product ID:<br />
+                    <input type="text" id="productid" value="" />
+                    <br /><br />Balance:<br />
+                    <input type="text" id="balance" value="" />
+                    <br /><br />Currency:<br />
+                    <input type="text" id="currency" value="" />
+                    <br /><br />
+                    <br /><br />User Name:<br />
+                    <input type="text" id="name" value="" />
+                    <br /><br />
+                    <input type="button" id="buttonpost" value="Buy Product" />
+                </form>
+            </div>
+            <div class="col-3">
+                <h2 id="billh2" style="display: none">Bill</h2><br />
+                <ul id="bill"></ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
